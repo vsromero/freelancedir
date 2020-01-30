@@ -1,0 +1,93 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "_LayoutWide";
+    var topCategories = Model.Categories.Where(c => c.ParentId == null);
+    string s = "This is a wider card with supporting text below as a natural lead-in to additional content.";
+}
+<section id="search">
+    <div class="jumbotron text-center">
+        <form action="/Gigs/Search" method="get">
+            <div class="form-group">
+                <input class="form-control" type="search" name="SearchString" value="" placeholder="Search" />
+            </div>
+            <button type="submit" class="btn btn-info">Search</button>
+        </form>
+        <hr />
+        <div class="row mt-5">
+            @foreach (var category in topCategories)
+            {
+                <div class="col-md-3" href="#">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="/gigs/?categoryid=@category.Id" class="stretched-link font-weight-normal">@category.Name</a>                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<hr />
+<section id="recent">
+    <h3 class="title">Recently Viewed</h3>
+
+    <div class="card mb-3" style="max-width: 400px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="..." class="card-img" alt="IMG">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text">@s.Substring(0, 50) . . .</p>
+                    <p class="card-text pb-0"><small class="text-muted">Starting at $50</small></p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<hr />
+<section id="popular">
+    <h3 class="title">Popular</h3>
+
+    <div class="card mb-3" style="max-width: 400px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="..." class="card-img" alt="IMG">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text">@s.Substring(0, 50) . . .</p>
+                    <p class="card-text pb-0"><small class="text-muted">Starting at $50</small></p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<hr />
+<section id="Suggested">
+    <h3 class="title">Suggested</h3>
+
+    <div class="card mb-3" style="max-width: 400px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="..." class="card-img" alt="IMG">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text">@s.Substring(0, 50) . . .</p>
+                    <p class="card-text pb-0"><small class="text-muted">Starting at $50</small></p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

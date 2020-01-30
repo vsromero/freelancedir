@@ -1,0 +1,17 @@
+﻿@page
+@model FreelanceDir.Pages.Gigs.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Delete</h3>
+<hr />
+<div class="jumbotron bg-light text-center">
+    <h4>Are you sure you want to delete <strong>@Model.Gig.Title</strong></h4>
+</div>
+<form method="post" class="text-center">
+    <input type="hidden" asp-for="Gig.Id" />
+    <a asp-page="/Users/Dashboard" class="btn btn-default">Cancel</a>
+    <input type="submit" value="Delete" class="btn btn-danger" />
+</form>

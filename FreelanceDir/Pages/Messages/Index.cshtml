@@ -1,0 +1,76 @@
+﻿@page
+@model FreelanceDir.Pages.Messages.IndexModel
+@inject UserManager<User> _userManager
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>Messages</h3>
+<hr />
+<div class="row">
+    <div class="col-2 border-right">
+        <div class="list-group list-group-flush">
+            @foreach (var conv in Model.Messages)
+            {
+                <button class="list-group-item list-group-item-action">@conv.Key</button>
+            }
+        </div>
+        
+    </div>
+
+    <div class="col">
+        <div class="jumbotron bg-light" id="conversationContainer">
+
+        </div>
+        <hr />
+
+        <form asp-page-handler="Send" method="post" id="sendMsgForm">
+            <div class="input-group mb-3">
+                <input type="text" name="Message.MessageText" class="form-control" id="messageTextInput" placeholder="Message" aria-label="Message" aria-describedby="sendMsgButton">
+                <div class="input-group-append">
+                    <input class="btn btn-success disabled" type="button" id="sendMsgButton" value="Send" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        var receivername;
+
+        $(".list-group .list-group-item").click(function () {
+            getMessages(this.textContent);
+            $("#sendMsgButton").removeClass("disabled");
+            receivername = this.textContent;
+        });
+
+        $("#sendMsgButton").click(function () {
+            sendMessage();
+        });
+
+        $("#sendMsgForm").keypress(function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function getMessages(user) {
+            $.ajax({
+                url: "/Messages?handler=UserConvo&otherusername=" + user,
+                success: function (partialView) {
+                    $("#conversationContainer").html(partialView);
+                },
+            });
+        }
+
+        function sendMessage() {
+            $.post("?handler=Send&receivername=" + receivername, $("#sendMsgForm").serialize(), function () {
+                getMessages(receivername);
+                $("#messageTextInput").val("");
+            });
+        }
+    </script>
+}

@@ -1,0 +1,68 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<h4>Account</h4>
+<hr />
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+<div class="row">
+    <div class="col-2">
+        <div class="list-group list-group-flush">
+            <a asp-page="Index" class="btn btn-default btn-link list-group-item list-group-item-action active">Profile</a>               
+            <a asp-page="ChangePassword" class="btn btn-default btn-link list-group-item list-group-item-action">Change Password</a>
+            <a asp-page="DeletePersonalData" class="btn btn-default btn-link list-group-item list-group-item-action">Delete Account</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            <div class="form-row form-group">
+                <div class="col">
+                    <label asp-for="Input.FirstName"></label>
+                    <input type="text" asp-for="Input.FirstName" class="form-control" placeholder="First name">
+                </div>
+                <div class="col">
+                    <label asp-for="Input.LastName"></label>
+                    <input type="text" asp-for="Input.LastName" class="form-control" placeholder="Last name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                @if (Model.IsEmailConfirmed)
+                {
+                    <div class="input-group">
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                    </div>
+                }
+                else
+                {
+                    <input asp-for="Input.Email" class="form-control" />
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                }
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Description"></label>
+                <textarea asp-for="Input.Description" class="form-control"></textarea>
+            </div>
+            <a asp-page="/Index" class="btn btn-default">Cancel</a>
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

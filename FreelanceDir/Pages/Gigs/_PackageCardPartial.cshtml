@@ -1,0 +1,44 @@
+﻿@using HtmlHelpers.BeginCollectionItemCore;
+@model Package
+@{
+    
+}
+
+@using (Html.BeginCollectionItem("Gig.Packages"))
+{
+<div class="tab-pane fade @ViewData["classes"]" id="nav-@Model.Name" role="tabpanel" aria-labelledby="nav-home-tab">
+    <input type="hidden" asp-for="@Model.Name" class="form-control name-input" />
+    <input type="hidden" asp-for="@Model.Id" />
+    <input type="hidden" asp-for="@Model.GigId" />
+    <textarea asp-for="@Model.Details" class="form-control mb-3" rows="10"></textarea>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Price: </label>
+        <div class="col-sm-10">
+            <input asp-for="@Model.Price" class="form-control" size="1" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Days to Delivery: </label>
+        <div class="col-sm-10">
+            <input asp-for="@Model.DeliveryDays" class="form-control" size="1" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Revisions: </label>
+        <div class="col-sm-10">
+            <input asp-for="@Model.Revisions" class="form-control" size="1" />
+        </div>
+    </div>
+    <div class="text-center">
+        <a class="btn-icon-only" href="Packages/Delete?Id=@Model.Id" data-toggle="tooltip" data-placement="top" title="Delete this package"><i class="fa fa-times text-danger"></i></a>
+        <a class="btn-icon-only" href="Packages/Create?Gigid=@Model.GigId" data-toggle="tooltip" data-placement="top" title="Add a new package"><i class="fa fa-plus text-success"></i></a>
+    </div>
+</div>
+<div>
+    <span asp-validation-for="@Model.Name" class="text-danger"></span>
+    <span asp-validation-for="@Model.Details" class="text-danger"></span>
+    <span asp-validation-for="@Model.Price" class="text-danger"></span>
+    <span asp-validation-for="@Model.DeliveryDays" class="text-danger"></span>
+    <span asp-validation-for="@Model.Revisions" class="text-danger"></span>
+</div>
+}

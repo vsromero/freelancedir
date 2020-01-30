@@ -1,0 +1,57 @@
+﻿@page
+@model FreelanceDir.Pages.Users.DashboardModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col"><h3>Your Gigs</h3></div>
+    <div class="col d-flex justify-content-end"><a class="btn btn-info align-self-end" asp-page="/Gigs/Create">Create New</a></div>
+</div>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Starting Price</th>
+            <th scope="col">Published</th>
+            <th scope="col">Delivered</th>
+            <th scope="col">Last Week Views</th>
+            <th scope="col">Total Views</th>
+            <th scope="col">Positive %</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gig in Model.Gigs)
+        {
+        <tr>
+            <th><a asp-page="/Gigs/Details" asp-route-id="@gig.Id" class="font-weight-normal text-dark">@gig.Title</a></th>
+            <td>@gig.Category</td>
+            <td>@gig.StartingPrice</td>
+            <td>@gig.Active</td>
+            <td>@gig.JobsCompleted</td>
+            <td>@gig.WeekViewsCount</td>
+            <td>@gig.TotalViewsCount</td>
+            <td>@gig.PositivePercentage</td>
+            <td class="text-right">
+                <div class="dropdown">
+                    <a class="btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-arrow">
+                        <a asp-page="/Gigs/Edit" asp-route-id="@gig.Id" class="dropdown-item">Edit</a>
+                        <a asp-page="/Gigs/Delete" asp-route-id="@gig.Id" class="dropdown-item">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+
+}

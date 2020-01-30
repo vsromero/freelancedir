@@ -1,0 +1,23 @@
+﻿@model List<Message>
+@inject UserManager<User> _userManager;
+@{
+    var messageJustify = "";
+}
+
+@foreach (var message in Model)
+{
+    if (message.SenderId == _userManager.GetUserId(User))
+    {
+        messageJustify = "d-flex justify-content-end";
+    }
+    else
+    {
+        messageJustify = "d-flex justify-content-start";
+    }
+    <div class="@messageJustify w-100">
+        <div class="alert alert-primary rounded text-dark font-weight-normal text-wrap text-break w-25 text-left">
+            @message.MessageText
+            <small>@message.CreatedDate.ToShortTimeString()</small>
+        </div>
+    </div>
+}

@@ -1,0 +1,54 @@
+﻿@model Gig
+@inject UserManager<User> UserManager
+@{
+
+}
+
+<div class="card mb-3" style="max-width: 400px;">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="..." class="card-img" alt="IMG">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <p class="card-text">
+                    <a asp-page="/Gigs/Details" asp-route-id="@Model.Id">
+                        @if (Model.Title.Length > 50)
+                        {
+                            @Model.Title.Substring(0, 50)
+                        }
+                        else
+                        {
+                            @Model.Title
+                        }
+                    </a>
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <p class="card-text pb-0">
+                            <a asp-page="/Users/Profile" asp-route-username="@Model.User.UserName"><small class="text-muted">@Model.User.UserName</small></a>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">From $@Model.StartingPrice</small>
+                        </p>
+                    </div>
+                    @if (Model.UserId.Equals(UserManager.GetUserId(User)))
+                    {
+                        <div class="col">
+                        <div class="dropright float-right">
+                            <a class="btn-icon-only text-secondary" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a asp-page="/Gigs/Details" asp-route-id="@Model.Id" class="dropdown-item">Details</a>
+                                <a asp-page="/Gigs/Edit" asp-route-id="@Model.Id" class="dropdown-item">Edit</a>
+                                <a asp-page="/Gigs/Delete" asp-route-id="@Model.Id" class="dropdown-item">Delete</a>
+                            </div>
+                        </div>
+                        </div>
+                    }
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>

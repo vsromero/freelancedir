@@ -1,0 +1,51 @@
+﻿@page
+@model FreelanceDir.Pages.Gigs.IndexModel
+
+@{
+    ViewData["Title"] = "search";
+}
+
+<form id="searchForm">
+    <div class="row pt-3">
+        <div class="col-sm-1"></div>
+        <div class="col-md-3 form-group">
+            <input type="search" asp-for="SearchString" placeholder="Search" class="form-control" />
+        </div>
+        <div class="col-md-2 form-group">
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories.SelectMany(c => c.Children), "Id", "Name", "", "Parent.Name"), "Select Category", new { @class = "form-control" })
+        </div>
+        <div class="col-md-2 form-group">
+            @Html.DropDownListFor(m => m.SortBy, Html.GetEnumSelectList<SortEnum>(), "Sort", new { @class = "form-control" })
+        </div>
+        <div class="col-md-1 d-flex align-items-center form-group">
+            <span class="btn-icon-only text-secondary mx-1" id="ascendingButton" style="cursor:pointer;"><i class="fa fa-arrow-up"></i></span>
+            <span class="btn-icon-only text-secondary mx-1" id="descendingButton" style="cursor:pointer;"><i class="fa fa-arrow-down"></i></span>
+        </div>
+        <div class="col-md-2 form-group">
+            <input type="submit" class="btn btn-info" value="Filter" />
+        </div>
+    </div>
+    <input type="hidden" asp-for="Descending" value="" id="descendingInput"/>
+</form>
+<hr />
+<div class="row row-no-gutters">
+    @foreach (var gig in Model.Gigs)
+    {
+        <div class="col-5 offset-1">
+            @await Html.PartialAsync("_GigCardPartial", gig)
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script type="text/javascript">   
+        $("#ascendingButton").click(function () {
+            $("#descendingInput").val();
+            $("#searchForm").submit();
+        });
+        $("#descendingButton").click(function () {
+            $("#descendingInput").val("true");
+            $("#searchForm").submit();
+        });
+    </script>
+}

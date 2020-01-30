@@ -1,0 +1,74 @@
+﻿@page
+@model FreelanceDir.Pages.Gigs.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    var topCategories = (List<Category>)ViewData["topCategories"];
+}
+
+<form method="post">
+    <div class="row">
+        <div class="col-10">
+            <h4>
+                <input asp-for="Gig.Title" class="form-control" />
+            </h4>
+            <span asp-validation-for="Gig.Title" class="text-danger"></span>
+        </div>
+        <div class="col-2 d-flex align-items-end">
+            <div class="form-check">
+                <label class="form-check-label font-weight-normal"  data-toggle="tooltip" data-placement="top" title="If checked the gig will be public">
+                    <input class="form-check-input" type="checkbox" asp-for="Gig.Active">
+                    Publish
+                    <span class="form-check-sign"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <div class="col-sm-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-white px-0">
+                    @Html.DropDownListFor(m => m.Gig.CategoryId, new SelectList(topCategories.SelectMany(c => c.Children), "Id", "Name", Model.Gig.CategoryId, "Parent.Name"), "", new { @class = "form-control" })
+                </ol>
+                <span asp-validation-for="Gig.Category" class="text-danger"></span>
+            </nav>
+            <textarea asp-for="Gig.Description" class="form-control" rows="10"></textarea>
+            <span asp-validation-for="Gig.Description" class="text-danger"></span>
+        </div>
+        <div class="col-sm-6">
+            <nav>
+                <div class="bg-light nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <span class="nav-item nav-link active" id="@Model.Gig.Packages.ElementAt(0).Name-tab" data-toggle="tab" href="#nav-@Model.Gig.Packages.ElementAt(0).Name" role="tab" aria-controls="nav-@Model.Gig.Packages.ElementAt(0).Name" aria-selected="true"><input class="form-control" size="8" value="@Model.Gig.Packages.ElementAt(0).Name" required /></span>
+                    @for (int i = 1; i < Model.Gig.Packages.Count; i++)
+                    {
+                        <span class="nav-item nav-link" id="@Model.Gig.Packages.ElementAt(i).Name-tab" data-toggle="tab" href="#nav-@Model.Gig.Packages.ElementAt(i).Name" role="tab" aria-controls="nav-@Model.Gig.Packages.ElementAt(i).Name" aria-selected="true"><input class="form-control" size="8" value="@Model.Gig.Packages.ElementAt(i).Name" required /></span>
+                    }
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                @for (int i = 0; i < Model.Gig.Packages.Count(); i++)
+                {
+                    @await Html.PartialAsync("_PackageCardPartial", Model.Gig.Packages.ElementAt(i), new ViewDataDictionary(this.ViewData) { { "classes", i > 0 ? "" : "show active" }, { "gigid", Model.Gig.Id } })
+                }
+            </div>
+        </div>        
+    </div>
+
+    <div>
+        <a asp-page="/Users/Dashboard" class="btn btn-default">Cancel</a>
+        <input type="submit" class="btn btn-info" value="Save" />
+        <input type="hidden" asp-for="Gig.Id" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $("nav div span input").change(function () {
+            var index = $("nav div span input").index($(this));
+            $($(".name-input")[index]).val($(this).val());
+        });
+    </script>
+}

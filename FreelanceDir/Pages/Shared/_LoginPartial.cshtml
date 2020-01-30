@@ -1,0 +1,39 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-page="/Gigs/Index">Hire</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-page="/Users/Dashboard">Sell</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @User.Identity.Name
+        </a>
+        <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" asp-page="/Users/Dashboard">My Gigs</a>
+            <a class="dropdown-item" asp-page="/Messages/Index">Messages</a>
+            <a class="dropdown-item" asp-page="/Users/Profile" asp-route-username="@User.Identity.Name">Profile</a>
+            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Account</a>
+            <div class="dropdown-divider"></div>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm">
+                <input type="submit" id="logout" class="d-none" />
+            </form>
+            <label class="dropdown-item mb-0" href="#" for="logout" tabindex="0" style="cursor: pointer">Sign out</label>
+        </div>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-compass" aria-hidden="true"></i>Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-compass" aria-hidden="true"></i>Login</a>
+    </li>
+}

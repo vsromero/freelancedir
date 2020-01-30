@@ -1,0 +1,82 @@
+﻿@page
+@model FreelanceDir.Pages.Users.ProfileModel
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="section profile-content">
+    <div class="container">
+        <div class="owner">
+            <div class="avatar mt-0">
+                <img src="~/images/tori.jpg" alt="Circle Image" class="img-circle img-responsive">
+            </div>
+            <div class="name">
+                <h4 class="title">
+                    @Model.User.FirstName @Model.User.LastName
+                    @if (Model.User.Id == UserManager.GetUserId(User))
+                    {
+                        <a class="btn btn-neutral" asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <i class="fas fa-user-edit"></i>
+                        </a>
+                    }
+                    <br />
+                </h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 ml-auto mr-auto text-center">
+                <p>@Model.User.Description</p>
+                <br />
+                <btn class="btn btn-outline-success btn-round"><i class="fa fa-envelope"></i>Message</btn>
+            </div>
+        </div>
+        <br />
+        <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#follows" role="tab">Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#following" role="tab">Gigs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Tab panes -->
+        <div class="tab-content following">
+            <div class="tab-pane active text-center" id="follows" role="tabpanel">
+                @if (Model.ReviewList.Count == 0)
+                {
+                    <h3>No reviews yet</h3>
+                }
+                else
+                {
+                    @foreach (var review in Model.ReviewList)
+                    {
+                        @await Html.PartialAsync("_ReviewPartial", review)
+                    }
+                }
+            </div>
+            <div class="tab-pane text-center" id="following" role="tabpanel">
+                <div class="row row-no-gutters">
+                    @if (Model.Gigs.Count == 0)
+                    {
+                        <h3 class="mx-auto">No gigs created yet</h3>
+                    }
+                    else
+                    {
+                        @foreach (var gig in Model.Gigs)
+                        {
+                            <div class="col-5 offset-1">
+                                @await Html.PartialAsync("_GigCardPartial", gig)
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

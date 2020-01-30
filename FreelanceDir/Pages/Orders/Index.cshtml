@@ -1,0 +1,37 @@
+﻿@page
+@model FreelanceDir.Pages.Orders.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>Confirm your order</h3>
+<h4>@Model.Package.Gig.Title</h4>
+<h4>@Model.Package.Name</h4>
+<p>@Model.Package.Details</p>
+<div class="row">
+    <div class="col"><p>Price: @Model.Package.Price</p></div>
+    <div class="col"><p>Days to Delivery: @Model.Package.DeliveryDays</p></div>
+    <div class="col"><p>Revisions: @Model.Package.Revisions</p></div>
+</div>
+<hr />
+<form method="post">
+    <input type="hidden" asp-for="Order.GigId" value="@Model.Package.Gig.Id" />
+    <input type="hidden" asp-for="Order.SellerId" value="@Model.Package.Gig.UserId" />
+    <input type="hidden" asp-for="Order.PackageId" value="@Model.Package.Id" />
+    <input type="hidden" asp-for="Order.Price" value="@Model.Package.Price" />
+    <input type="hidden" asp-for="Order.AmountPaidByBuyer" value="@Model.Package.Price" />
+    <input type="hidden" asp-for="DeliveryDays" value="@Model.Package.DeliveryDays"/>
+    <div class="form-group">
+        <label asp-for="Order.Note" class="control-label">Notes or additional comments (optional)</label>
+        <textarea asp-for="Order.Note" class="form-control"></textarea>
+        <span asp-validation-for="Order.Note" class="text-danger"></span>
+    </div>
+    <div class="form-group text-center">
+        <input type="submit" value="Confirm" class="btn btn-success" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

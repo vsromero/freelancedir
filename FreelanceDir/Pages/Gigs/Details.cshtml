@@ -1,0 +1,107 @@
+﻿@page
+@model FreelanceDir.Pages.Gigs.DetailsModel
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    var activeClasses = "show active";
+}
+
+<div class="row">
+    <div class="col-10">
+        <h3>@Html.DisplayFor(model => model.Gig.Title)</h3>
+    </div>
+    @if (Model.Gig.UserId.Equals(UserManager.GetUserId(User)))
+    {
+        <div class="col d-flex justify-content-end">
+            <div class="dropleft align-self-end">
+                <a class="btn btn-neutral" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a asp-page="Edit" asp-route-id="@Model.Gig.Id" class="dropdown-item">Edit</a>
+                    <a asp-page="Delete" asp-route-id="@Model.Gig.Id" class="dropdown-item">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-light">
+                <li class="breadcrumb-item">@Model.Gig.Category.Parent.Name</li>
+                <li class="breadcrumb-item">@Model.Gig.Category.Name</li>
+            </ol>
+        </nav>
+        <h5 class="title">@Model.Gig.Title</h5>
+        <p>
+            @Html.DisplayFor(model => model.Gig.Description)
+        </p>
+        <br />
+        <p>@Model.Gig.JobsCompleted Delivered | @Model.Gig.PositivePercentage.ToString("P0") Positive</p>
+    </div>
+    <div class="col-sm-6">
+        <nav>
+            <div class="bg-light nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="@Model.Gig.Packages.ElementAt(0).Name-tab" data-toggle="tab" href="#nav-@Model.Gig.Packages.ElementAt(0).Name" role="tab" aria-controls="nav-@Model.Gig.Packages.ElementAt(0).Name" aria-selected="true">@Model.Gig.Packages.ElementAt(0).Name</a>
+                @for (int i = 1; i < Model.Gig.Packages.Count(); i++)
+                {
+                    <a class="nav-item nav-link" id="@Model.Gig.Packages.ElementAt(i).Name-tab" data-toggle="tab" href="#nav-@Model.Gig.Packages.ElementAt(i).Name" role="tab" aria-controls="nav-@Model.Gig.Packages.ElementAt(i).Name" aria-selected="true">@Model.Gig.Packages.ElementAt(i).Name</a>
+                }
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            @for (int i = 0; i < Model.Gig.Packages.Count(); i++)
+            {
+                if (i > 0) { activeClasses = ""; }
+                <div class="tab-pane fade pt-1 @activeClasses" id="nav-@Model.Gig.Packages.ElementAt(i).Name" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <p>@Model.Gig.Packages.ElementAt(i).Details</p>
+                    <p>Price: @Model.Gig.Packages.ElementAt(i).Price</p>
+                    <p>Days to Delivery: @Model.Gig.Packages.ElementAt(i).DeliveryDays</p>
+                    <p>Revisions: @Model.Gig.Packages.ElementAt(i).Revisions</p>
+                    <div class="form-group">
+                        <a asp-page="/Orders/Index" asp-route-pid="@Model.Gig.Packages.ElementAt(i).Id" class="btn btn-success btn-block">Order</a>
+                    </div>                    
+                </div>                
+            }
+        </div>
+        <a asp-page="/Messages/Index" class="btn btn-info btn-block">Contact Seller</a>
+    </div>
+</div>
+<hr />
+
+<h4>Reviews</h4>
+<div>
+    @foreach (var review in Model.Gig.Reviews)
+    {
+        @await Html.PartialAsync("_ReviewPartial", review)
+    }
+
+    <hr />
+    <form asp-page-handler="Review" method="post">
+        <input type="hidden" asp-for="Review.GigId" value="@Model.Gig.Id" />
+        <div class="form-group">
+            <textarea asp-for="Review.Text" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Review.Text" class="text-danger"></span>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label font-weight-normal">
+                <input class="form-check-input" type="checkbox" asp-for="Review.Positive" checked>
+                Would you recommend this to your friends?
+                <span class="form-check-sign"></span>
+            </label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-info btn-block">Post Review</button>
+        </div>
+    </form>
+</div>
+
+<h4>Related</h4>
+<div class="row">
+    <div class="col">
+    </div>
+</div>
