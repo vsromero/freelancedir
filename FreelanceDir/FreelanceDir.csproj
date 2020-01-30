@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Categories\" />
-    <Folder Include="Areas\Admin\Gigs\" />
-    <Folder Include="Areas\Admin\Users\" />
-    <Folder Include="Areas\Admin\Orders\" />
     <Folder Include="Areas\Identity\Services\" />
   </ItemGroup>
 
