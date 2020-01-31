@@ -39,6 +39,7 @@ namespace FreelanceDir.Pages.Gigs
                     .ThenInclude(c => c.Parent)
                 .Include(g => g.Packages)
                 .Include(g => g.Reviews)
+                    .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Gig == null)

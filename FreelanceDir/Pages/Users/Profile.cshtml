@@ -29,7 +29,7 @@
             <div class="col-md-6 ml-auto mr-auto text-center">
                 <p>@Model.User.Description</p>
                 <br />
-                <btn class="btn btn-outline-success btn-round"><i class="fa fa-envelope"></i>Message</btn>
+                <a class="btn btn-outline-success btn-round" asp-page="/Messages/Index" asp-route-r="@Model.User.UserName"><i class="fa fa-envelope"></i>Message</a>
             </div>
         </div>
         <br />
@@ -62,7 +62,7 @@
             </div>
             <div class="tab-pane text-center" id="following" role="tabpanel">
                 <div class="row row-no-gutters">
-                    @if (Model.Gigs.Count == 0)
+                    @if (Model.Gigs.Count == 0 || Model.Gigs == null)
                     {
                         <h3 class="mx-auto">No gigs created yet</h3>
                     }

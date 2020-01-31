@@ -3,6 +3,8 @@
 @inject UserManager<User> _userManager
 @{
     ViewData["Title"] = "Index";
+    var ruser = ViewData["touser"];
+    var dclass = ViewData["touser"] == null ? "disabled" : "";
 }
 
 <h3>Messages</h3>
@@ -10,25 +12,33 @@
 <div class="row">
     <div class="col-2 border-right">
         <div class="list-group list-group-flush">
+            @if (ruser != null && Model.Messages.Count == 0)
+            {
+                <button type="button" class="list-group-item list-group-item-action">@ruser</button>
+            }
             @foreach (var conv in Model.Messages)
             {
-                <button class="list-group-item list-group-item-action">@conv.Key</button>
+                var active = conv.Key.Equals(ruser) ? "text-dark font-weight-bold" : "";
+                var unseen = Model.Messages[conv.Key].Any(m => !m.Seen) ? "font-italic" : "";
+                <button type="button" class="list-group-item list-group-item-action font-weight-normal @active @unseen">@conv.Key</button>
             }
-        </div>
-        
+        </div>        
     </div>
 
     <div class="col">
         <div class="jumbotron bg-light" id="conversationContainer">
-
+            @if (ruser != null)
+            {
+                @await Html.PartialAsync("_ConvoPartial", Model.Convo)
+            }
         </div>
         <hr />
-
         <form asp-page-handler="Send" method="post" id="sendMsgForm">
             <div class="input-group mb-3">
+                <input type="hidden" name="ReceiverName" value="@ruser" id="rInput" />
                 <input type="text" name="Message.MessageText" class="form-control" id="messageTextInput" placeholder="Message" aria-label="Message" aria-describedby="sendMsgButton">
                 <div class="input-group-append">
-                    <input class="btn btn-success disabled" type="button" id="sendMsgButton" value="Send" />
+                    <input class="btn btn-success" type="button" id="sendMsgButton" value="Send" @dclass />
                 </div>
             </div>
         </form>
@@ -38,12 +48,12 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-        var receivername;
 
         $(".list-group .list-group-item").click(function () {
             getMessages(this.textContent);
-            $("#sendMsgButton").removeClass("disabled");
-            receivername = this.textContent;
+            $("#sendMsgButton").removeAttr("disabled");
+            $("#rInput").val(this.textContent);
+            setActiveItem(this);
         });
 
         $("#sendMsgButton").click(function () {
@@ -53,13 +63,13 @@
         $("#sendMsgForm").keypress(function (e) {
             if (e.which == 13) {
                 e.preventDefault();
-                sendMessage();
+                //sendMessage();
             }
         });
 
         function getMessages(user) {
             $.ajax({
-                url: "/Messages?handler=UserConvo&otherusername=" + user,
+                url: "/Messages?handler=UserConvo&r=" + user,
                 success: function (partialView) {
                     $("#conversationContainer").html(partialView);
                 },
@@ -67,10 +77,18 @@
         }
 
         function sendMessage() {
-            $.post("?handler=Send&receivername=" + receivername, $("#sendMsgForm").serialize(), function () {
-                getMessages(receivername);
+            $.post("?handler=Send", $("#sendMsgForm").serialize(), function (partialView) {                
+                $("#conversationContainer").html(partialView);
                 $("#messageTextInput").val("");
             });
+        }
+
+        function setActiveItem(element) {
+            $(element).removeClass("font-italic");
+            $(".list-group-item").each(function (i, e) {
+                $(e).removeClass("text-dark font-weight-bold");
+            });
+            $(element).addClass("text-dark font-weight-bold");            
         }
     </script>
 }

@@ -24,9 +24,12 @@ namespace FreelanceDir.Pages.Messages
             _userManager = userManager;
         }
                 
-        public ILookup<string, Message> Messages { get; set; }     
+        public ILookup<string, Message> Messages { get; set; }
+        public List<Message> Convo { get; set; }
         [BindProperty]
         public Message Message { get; set; }
+        [BindProperty]
+        public string ReceiverName { get; set; }
 
         private ILookup<string, Message> GetMessages()
         {
@@ -35,38 +38,53 @@ namespace FreelanceDir.Pages.Messages
                 .ToLookup(m => m.ReceiverId != _userManager.GetUserId(User) ? _context.Users.Find(m.ReceiverId).UserName : _context.Users.Find(m.SenderId).UserName, m => m);
         }
 
-        public void OnGet()
+        public IActionResult OnGet(string r)
         {
             Messages = GetMessages();
+            if (string.IsNullOrEmpty(r))
+            {
+                Convo = new List<Message>();
+                return Page();
+            }
+
+            if (!_context.Users.Any(u => u.UserName.Equals(r)))
+            {
+                return NotFound();
+            }
+            
+            Convo = Messages[r].ToList();
+            ViewData["touser"] = _context.Users.FirstOrDefault(u => u.UserName.Equals(r)).UserName;
+
+            return Page();
         }
 
-        public IActionResult OnGetUserConvo(string otherusername)
+        public IActionResult OnGetUserConvo(string r)
         {
-            OnGet();
+            Messages = GetMessages();
             return new PartialViewResult
             {
                 ViewName = "_ConvoPartial",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
-                    Model = Messages[otherusername].ToList(),
+                    Model = Messages[r].ToList(),
                 },
             };
         }
 
-        public async Task<IActionResult> OnPostSendAsync(string receivername)
+        public async Task<IActionResult> OnPostSendAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            Message.Receiver = await _userManager.FindByNameAsync(receivername);
+            Message.Receiver = await _userManager.FindByNameAsync(ReceiverName);
             Message.Sender = await _userManager.GetUserAsync(User);
 
             _context.Messages.Add(Message);
             await _context.SaveChangesAsync();
 
-            return OnGetUserConvo(receivername);
+            return OnGetUserConvo(ReceiverName);
         }
     }
 }

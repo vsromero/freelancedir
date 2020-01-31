@@ -11,20 +11,6 @@
     <div class="col-10">
         <h3>@Html.DisplayFor(model => model.Gig.Title)</h3>
     </div>
-    @if (Model.Gig.UserId.Equals(UserManager.GetUserId(User)))
-    {
-        <div class="col d-flex justify-content-end">
-            <div class="dropleft align-self-end">
-                <a class="btn btn-neutral" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v"></i>
-                </a>
-                <div class="dropdown-menu">
-                    <a asp-page="Edit" asp-route-id="@Model.Gig.Id" class="dropdown-item">Edit</a>
-                    <a asp-page="Delete" asp-route-id="@Model.Gig.Id" class="dropdown-item">Delete</a>
-                </div>
-            </div>
-        </div>
-    }
 </div>
 
 <hr />
@@ -41,7 +27,11 @@
             @Html.DisplayFor(model => model.Gig.Description)
         </p>
         <br />
-        <p>@Model.Gig.JobsCompleted Delivered | @Model.Gig.PositivePercentage.ToString("P0") Positive</p>
+        <div class="row">
+            <div class="col"><p>@Model.Gig.JobsCompleted Delivered | @Model.Gig.PositivePercentage.ToString("P0") Positive</p></div>
+            <div class="col text-right"><a asp-page="/Users/Profile" asp-route-username="@Model.Gig.User.UserName" class="font-weight-normal">@Model.Gig.User.UserName</a></div>
+        </div>
+       
     </div>
     <div class="col-sm-6">
         <nav>

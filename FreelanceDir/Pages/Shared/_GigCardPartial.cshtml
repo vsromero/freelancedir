@@ -32,21 +32,6 @@
                             <small class="text-muted">From $@Model.StartingPrice</small>
                         </p>
                     </div>
-                    @if (Model.UserId.Equals(UserManager.GetUserId(User)))
-                    {
-                        <div class="col">
-                        <div class="dropright float-right">
-                            <a class="btn-icon-only text-secondary" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a asp-page="/Gigs/Details" asp-route-id="@Model.Id" class="dropdown-item">Details</a>
-                                <a asp-page="/Gigs/Edit" asp-route-id="@Model.Id" class="dropdown-item">Edit</a>
-                                <a asp-page="/Gigs/Delete" asp-route-id="@Model.Id" class="dropdown-item">Delete</a>
-                            </div>
-                        </div>
-                        </div>
-                    }
                 </div>                
             </div>
         </div>

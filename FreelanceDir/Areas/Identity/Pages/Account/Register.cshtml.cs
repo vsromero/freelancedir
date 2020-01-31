@@ -79,7 +79,13 @@ namespace FreelanceDir.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    Email = Input.Email
+                    Email = Input.Email,                                        
+                    MessagesReceived = new List<Message>(),
+                    MessagesSent = new List<Message>(),
+                    Gigs = new List<Gig>(),
+                    OrdersReceived = new List<Order>(),
+                    OrdersSent = new List<Order>(),
+                    Reviews = new List<Review>()
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

@@ -6,6 +6,7 @@ using FreelanceDir.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreelanceDir.Pages.Users
 {
@@ -32,13 +33,24 @@ namespace FreelanceDir.Pages.Users
             }
 
             User = await _userManager.FindByNameAsync(userName);
-            Gigs = _context.Gigs.OrderByDescending(g => g.LastModifiedDate > g.CreatedDate ? g.LastModifiedDate : g.CreatedDate).Where(g => g.Active).ToList();
-            ReviewList = _context.Gigs.SelectMany(g => g.Reviews).Where(r => r.Positive).OrderByDescending(r => r.CreatedDate).Take(10).ToList();
 
             if (User == null)
             {
                 return NotFound();
             }
+
+            Gigs = _context.Gigs
+                .Where(g => g.Active && g.UserId == User.Id)
+                .Include(g => g.User)                
+                .OrderByDescending(g => g.LastModifiedDate > g.CreatedDate ? g.LastModifiedDate : g.CreatedDate)
+                .Take(10).ToList();
+            ReviewList = _context.Gigs
+                .SelectMany(g => g.Reviews)                
+                .Where(r => r.Positive)
+                .Include(r => r.User)
+                .OrderByDescending(r => r.CreatedDate)
+                .Take(10).ToList();
+
             return Page();
         }
     }

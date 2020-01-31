@@ -5,6 +5,12 @@
     <UserSecretsId>aspnet-FreelanceDir-BEE86D13-CA8E-4182-8773-1C0F46E03490</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
