@@ -51,7 +51,16 @@ namespace FreelanceDir.Pages.Messages
             {
                 return NotFound();
             }
-            
+            //Set messages status to seen
+            foreach (var m in Messages[r])
+            {
+                if (_userManager.GetUserId(User) == m.ReceiverId)
+                {
+                    m.Seen = true;
+                }
+            }
+            _context.SaveChanges();
+
             Convo = Messages[r].ToList();
             ViewData["touser"] = _context.Users.FirstOrDefault(u => u.UserName.Equals(r)).UserName;
 
@@ -61,6 +70,16 @@ namespace FreelanceDir.Pages.Messages
         public IActionResult OnGetUserConvo(string r)
         {
             Messages = GetMessages();
+            //Set messages status to seen          
+            foreach (var m in Messages[r])
+            {
+                if (_userManager.GetUserId(User) == m.ReceiverId)
+                {
+                    m.Seen = true;
+                }                
+            }
+            _context.SaveChanges();
+
             return new PartialViewResult
             {
                 ViewName = "_ConvoPartial",
@@ -83,7 +102,7 @@ namespace FreelanceDir.Pages.Messages
 
             _context.Messages.Add(Message);
             await _context.SaveChangesAsync();
-
+            //send updated partial
             return OnGetUserConvo(ReceiverName);
         }
     }

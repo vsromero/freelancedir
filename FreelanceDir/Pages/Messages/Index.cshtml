@@ -12,14 +12,17 @@
 <div class="row">
     <div class="col-2 border-right">
         <div class="list-group list-group-flush">
-            @if (ruser != null && Model.Messages.Count == 0)
+            @* If user is defined in route and it is not listed in message list add it *@
+            @if (ruser != null && !Model.Messages.Any(m => m.Key.Equals(ruser)))
             {
-                <button type="button" class="list-group-item list-group-item-action">@ruser</button>
+                <button type="button" class="list-group-item list-group-item-action text-dark font-weight-bold">@ruser</button>
             }
             @foreach (var conv in Model.Messages)
             {
+                @* classes for currently selected user *@
                 var active = conv.Key.Equals(ruser) ? "text-dark font-weight-bold" : "";
-                var unseen = Model.Messages[conv.Key].Any(m => !m.Seen) ? "font-italic" : "";
+                @* set unseen status if message is not seen and current user is not sender *@
+                var unseen = Model.Messages[conv.Key].Any(m => !m.Seen && m.SenderId != _userManager.GetUserId(User)) ? "font-italic" : "";
                 <button type="button" class="list-group-item list-group-item-action font-weight-normal @active @unseen">@conv.Key</button>
             }
         </div>        
@@ -38,7 +41,8 @@
                 <input type="hidden" name="ReceiverName" value="@ruser" id="rInput" />
                 <input type="text" name="Message.MessageText" class="form-control" id="messageTextInput" placeholder="Message" aria-label="Message" aria-describedby="sendMsgButton">
                 <div class="input-group-append">
-                    <input class="btn btn-success" type="button" id="sendMsgButton" value="Send" @dclass />
+                    @{ var isdisabled = ruser == null ? "disabled" : ""; }
+                    <input class="btn btn-success" type="button" id="sendMsgButton" value="Send" @isdisabled />
                 </div>
             </div>
         </form>

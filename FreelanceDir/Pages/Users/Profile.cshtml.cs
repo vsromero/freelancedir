@@ -46,7 +46,7 @@ namespace FreelanceDir.Pages.Users
                 .Take(10).ToList();
             ReviewList = _context.Gigs
                 .SelectMany(g => g.Reviews)                
-                .Where(r => r.Positive)
+                .Where(r => r.Positive && r.Gig.UserId == User.Id)
                 .Include(r => r.User)
                 .OrderByDescending(r => r.CreatedDate)
                 .Take(10).ToList();
