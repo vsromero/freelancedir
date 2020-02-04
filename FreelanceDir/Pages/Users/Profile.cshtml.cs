@@ -41,7 +41,8 @@ namespace FreelanceDir.Pages.Users
 
             Gigs = _context.Gigs
                 .Where(g => g.Active && g.UserId == User.Id)
-                .Include(g => g.User)                
+                .Include(g => g.User)
+                .Include(g => g.Packages)
                 .OrderByDescending(g => g.LastModifiedDate > g.CreatedDate ? g.LastModifiedDate : g.CreatedDate)
                 .Take(10).ToList();
             ReviewList = _context.Gigs

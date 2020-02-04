@@ -1,17 +1,65 @@
 ﻿@page
 @model FreelanceDir.Pages.Users.DashboardModel
+@inject IJsonHelper Json
 
 @{
     ViewData["Title"] = "Index";
+    //Get month name
+    var monthLabels = Json.Serialize(Model.LatestOrders.Reverse().Select(o => o.DeliveredDate.ToString("MMM")).Distinct());
+    //Get the sum of order earnings by month
+    var monthEarnings = Json.Serialize(Model.LatestOrders.Reverse().ToLookup(o => o.DeliveredDate.Month, o => o.AmountPaidToSeller).Select(o => o.Sum()));
+    //Get gig names
+    var gigLabels = Json.Serialize(Model.Gigs.OrderBy(g => g.Id).Select(g => g.Title));
+    //Get the sum of order earnings by gig
+    var gigEarnings = Json.Serialize(Model.LatestOrders.OrderBy(o => o.GigId).ToLookup(o => o.GigId, o => o.AmountPaidToSeller).Select(o => o.Sum()));
 }
 
 <div class="row">
-    <div class="col"><h3>Your Gigs</h3></div>
+    <div class="col"><h3>Dashboard</h3></div>
     <div class="col d-flex justify-content-end"><a class="btn btn-info align-self-end" asp-page="/Gigs/Create">Create New</a></div>
 </div>
+<hr />
 
-<table class="table mt-3">
-    <thead>
+<div class="row">
+    <div class="col">
+        <h6>Latest Orders</h6>
+        <div class="list-grup">
+            @foreach (var order in Model.LatestOrders.Take(5))
+            {
+                <a href="#" class="list-group-item list-group-item-action">@order.Gig.Title - @order.Buyer.UserName</a>
+            }
+        </div>
+    </div>
+    <div class="col">
+        <h6>Latest Messages</h6>
+        <div class="list-grup">
+            @foreach (var message in Model.LatestMessages.Take(5))
+            {
+                var subtext = @message.MessageText.Substring(0, message.MessageText.Length >= 10 ? 10 : message.MessageText.Length);
+                <a href="#" class="list-group-item list-group-item-action">@message.Sender.UserName - @subtext</a>
+            }
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col">
+        <h6>Monthly Earnings</h6>    
+        <canvas id="myChart" width="400" height="220"></canvas>
+    </div>
+    <div class="col">
+        <h6>Gig Earnings</h6>
+        <canvas id="pieChart" width="400" height="220"></canvas>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col"><h4>Your Gigs</h4></div>
+    
+</div>
+
+<table class="table mt-3 table-striped table-sm">
+    <thead class="thead-dark">
         <tr>
             <th scope="col">Title</th>
             <th scope="col">Category</th>
@@ -27,31 +75,101 @@
     <tbody>
         @foreach (var gig in Model.Gigs)
         {
-        <tr>
-            <th><a asp-page="/Gigs/Details" asp-route-id="@gig.Id" class="font-weight-normal text-dark">@gig.Title</a></th>
-            <td>@gig.Category</td>
-            <td>@gig.StartingPrice</td>
-            <td>@gig.Active</td>
-            <td>@gig.JobsCompleted</td>
-            <td>@gig.WeekViewsCount</td>
-            <td>@gig.TotalViewsCount</td>
-            <td>@gig.PositivePercentage</td>
-            <td class="text-right">
-                <div class="dropdown">
-                    <a class="btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-arrow">
-                        <a asp-page="/Gigs/Edit" asp-route-id="@gig.Id" class="dropdown-item">Edit</a>
-                        <a asp-page="/Gigs/Delete" asp-route-id="@gig.Id" class="dropdown-item">Delete</a>
+            <tr>
+                <th><a asp-page="/Gigs/Details" asp-route-id="@gig.Id" class="font-weight-normal text-dark">@gig.Title</a></th>
+                <td>@gig.Category.Name</td>
+                <td>$@gig.StartingPrice</td>
+                <td>@gig.Active</td>
+                <td>@gig.JobsCompleted</td>
+                <td>@gig.WeekViewsCount</td>
+                <td>@gig.TotalViewsCount</td>
+                <td>@gig.PositivePercentage.ToString("P0")</td>
+                <td class="text-right">
+                    <div class="dropdown">
+                        <a class="btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-arrow">
+                            <a asp-page="/Gigs/Edit" asp-route-id="@gig.Id" class="dropdown-item">Edit</a>
+                            <a asp-page="/Gigs/Delete" asp-route-id="@gig.Id" class="dropdown-item">Delete</a>
+                        </div>
                     </div>
-                </div>
-            </td>
-        </tr>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
 
 @section Scripts {
+<script>
+    var mLabels = @Html.Raw(monthLabels);
+    var mEarnings = @Html.Raw(monthEarnings);
 
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: mLabels,
+            datasets: [{
+                label: 'Earnings',
+                data: mEarnings,
+                fill: false,
+                borderColor: [
+                    'rgba(1, 120, 1, 1)',
+                ],
+                borderWidth: 1,
+                pointRadius: 5,
+                pointBackgroundColor: 'rgba(1, 120, 1, 1)',
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function (value, index, values) {
+                            return '$' + value;
+                        }
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index];
+                        var value = data.datasets[0].data[tooltipItem.index];
+                        return label + ': $' + value;
+                    }
+                }
+            }
+        }
+    });
+
+    var gLabels = @Html.Raw(gigLabels);
+    var gEarnings = @Html.Raw(gigEarnings);
+    var colorlist = ['#3ec2cf', '#b27fb2', '#ff4500', '#ff0000', '#cd8500', '#0336ff', '#ff0266', '#660066',];
+
+    var ctxPie = document.getElementById('pieChart').getContext('2d');
+    var myPieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: gLabels,
+            datasets: [{
+                data: gEarnings,
+                backgroundColor: colorlist,
+            }]
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index];
+                        var value = data.datasets[0].data[tooltipItem.index];
+                        return label + ': $' + value;
+                    }
+                }
+            }
+        },
+    });
+</script>
 }

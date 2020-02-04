@@ -6,6 +6,7 @@ using FreelanceDir.Data;
 using FreelanceDir.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreelanceDir.Pages
 {
@@ -28,7 +29,11 @@ namespace FreelanceDir.Pages
             {               
                 return RedirectToPage("LandingPage");
             }
-
+            Popular = _context.Gigs
+                .Include(g=>g.User)
+                .Include(g=>g.Packages)
+                .Include(g=>g.Reviews)
+                .OrderByDescending(g => g.TotalViewsCount).ToList();       
             Categories = _context.Categories.ToList();
             return Page();
         }

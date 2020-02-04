@@ -9,14 +9,14 @@
         <a class="nav-link" asp-page="/Gigs/Index">Hire</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" asp-page="/Users/Dashboard">Sell</a>
+        <a class="nav-link" asp-page="/Gigs/Create">Sell</a>
     </li>
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             @User.Identity.Name
         </a>
         <div class="dropdown-menu dropdown-info" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-page="/Users/Dashboard">My Gigs</a>
+            <a class="dropdown-item" asp-page="/Users/Dashboard">Dashboard</a>
             <a class="dropdown-item" asp-page="/Messages/Index">Messages</a>
             <a class="dropdown-item" asp-page="/Users/Profile" asp-route-username="@User.Identity.Name">Profile</a>
             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Account</a>

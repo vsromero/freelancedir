@@ -46,11 +46,10 @@ namespace FreelanceDir.Pages.Gigs
             {
                 return NotFound();
             }
-
-            var positiveReviews = Gig.Reviews.Where(r => r.Positive).Count();
-            var totalReviews = Gig.Reviews.Count;
-            Gig.PositivePercentage = Gig.Reviews.Count > 0 ? Decimal.Divide(positiveReviews, totalReviews) : 0;            
+          
             Gig.TotalViewsCount++;
+            _context.SaveChanges();
+
             return Page();
         }
 
