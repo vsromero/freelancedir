@@ -22,7 +22,10 @@
 
 <div class="row">
     <div class="col">
-        <h6>Latest Orders</h6>
+        <div class="row">
+            <div class="col"><h6>Latest Orders</h6></div>
+            <div class="col"><a asp-page="/Orders/Index" class="font-weight-normal">See all</a></div>
+        </div>        
         <div class="list-grup">
             @foreach (var order in Model.LatestOrders.Take(5))
             {
@@ -31,7 +34,10 @@
         </div>
     </div>
     <div class="col">
-        <h6>Latest Messages</h6>
+        <div class="row">
+            <div class="col"><h6>Latest Messages</h6></div>
+            <div class="col"><a asp-page="/Messages/Index" class="font-weight-normal">See all</a></div>
+        </div>
         <div class="list-grup">
             @foreach (var message in Model.LatestMessages.Take(5))
             {
@@ -54,8 +60,7 @@
 </div>
 
 <div class="row">
-    <div class="col"><h4>Your Gigs</h4></div>
-    
+    <div class="col"><h4>Your Gigs</h4></div>    
 </div>
 
 <table class="table mt-3 table-striped table-sm">

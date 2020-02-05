@@ -53,7 +53,7 @@
                     <p>Days to Delivery: @Model.Gig.Packages.ElementAt(i).DeliveryDays</p>
                     <p>Revisions: @Model.Gig.Packages.ElementAt(i).Revisions</p>
                     <div class="form-group">
-                        <a asp-page="/Orders/Index" asp-route-pid="@Model.Gig.Packages.ElementAt(i).Id" class="btn btn-success btn-block">Order</a>
+                        <a asp-page="/Orders/Confirm" asp-route-pid="@Model.Gig.Packages.ElementAt(i).Id" class="btn btn-success btn-block">Order</a>
                     </div>                    
                 </div>                
             }

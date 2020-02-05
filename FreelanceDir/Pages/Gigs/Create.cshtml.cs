@@ -47,9 +47,10 @@ namespace FreelanceDir.Pages.Gigs
                 Details = "This is an example package. You should edit this and all the fields below.",
                 Gig = Gig,
             };
-            var pl = new List<Package>() { basicPackage };
-            Gig.Packages = pl;
-            _context.Gigs.Add(Gig);
+            
+            Gig.Packages = new List<Package>() { basicPackage };            
+            Gig.Reviews = new List<Review>();
+            _context.Gigs.Add(Gig);            
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Edit", new { id = Gig.Id });

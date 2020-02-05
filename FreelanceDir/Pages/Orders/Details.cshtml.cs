@@ -10,24 +10,35 @@ using FreelanceDir.Models;
 
 namespace FreelanceDir.Pages.Orders
 {
-    public class IndexModel : PageModel
+    public class DetailsModel : PageModel
     {
         private readonly FreelanceDir.Data.RDSContext _context;
 
-        public IndexModel(FreelanceDir.Data.RDSContext context)
+        public DetailsModel(FreelanceDir.Data.RDSContext context)
         {
             _context = context;
         }
 
-        public IList<Order> Order { get;set; }
+        public Order Order { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             Order = await _context.Orders
                 .Include(o => o.Buyer)
                 .Include(o => o.Gig)
                 .Include(o => o.Package)
-                .Include(o => o.Seller).ToListAsync();
+                .Include(o => o.Seller).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (Order == null)
+            {
+                return NotFound();
+            }
+            return Page();
         }
     }
 }

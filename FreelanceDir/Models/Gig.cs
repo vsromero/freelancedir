@@ -28,15 +28,6 @@ namespace FreelanceDir.Models
 
         public int TotalViewsCount { get; set; }
 
-        [NotMapped]
-        [DataType(DataType.Currency)]
-        public decimal StartingPrice {
-            get
-            {
-                return Packages.Where(p => p.Gig.Active).Min(p => p.Price);
-            }
-        }
-
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
@@ -48,9 +39,27 @@ namespace FreelanceDir.Models
         public decimal PositivePercentage {
             get
             {
+                if (Reviews == null || Reviews.Count == 0)
+                {
+                    return 0;
+                }
                 var positiveReviews = Reviews.Where(r => r.Positive).Count();
                 var totalReviews = Reviews.Count;
-                return Reviews.Count > 0 ? Decimal.Divide(positiveReviews, totalReviews) : 0;
+                return Decimal.Divide(positiveReviews, totalReviews);
+            }
+        }
+
+        [NotMapped]
+        [DataType(DataType.Currency)]
+        public decimal StartingPrice
+        {
+            get
+            {
+                if (Packages == null || Packages.Count == 0)
+                {
+                    return 0;
+                }
+                return Packages.Min(p => p.Price);
             }
         }
     }
