@@ -46,8 +46,9 @@
             </div>
         </div>
         <!-- Tab panes -->
-        <div class="tab-content following">
-            <div class="tab-pane active text-center" id="follows" role="tabpanel">
+        <!-- Review List -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="follows" role="tabpanel">
                 @if (Model.ReviewList.Count == 0)
                 {
                     <h3>No reviews yet</h3>
@@ -60,7 +61,8 @@
                     }
                 }
             </div>
-            <div class="tab-pane text-center" id="following" role="tabpanel">
+            <!-- Gig List -->
+            <div class="tab-pane" id="following" role="tabpanel">
                 <div class="row row-no-gutters">
                     @if (Model.Gigs.Count == 0 || Model.Gigs == null)
                     {
@@ -70,7 +72,7 @@
                     {
                         @foreach (var gig in Model.Gigs)
                         {
-                            <div class="col-5 offset-1">
+                            <div class="col-md-4">
                                 @await Html.PartialAsync("_GigCardPartial", gig)
                             </div>
                         }

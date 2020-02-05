@@ -38,7 +38,7 @@ namespace FreelanceDir.Pages.Users
                 .ToListAsync();
 
             LatestOrders = await _context.Orders
-                .Where(o => o.SellerId == _userManager.GetUserId(User))
+                .Where(o => o.SellerId == _userManager.GetUserId(User) || o.BuyerId == _userManager.GetUserId(User))
                 .Include(o => o.Buyer)
                 .Include(o => o.Gig)
                 .Include(o => o.Package)

@@ -5,12 +5,11 @@
 }
 
 <div class="row">
-    <div class="col-lg-4 ml-auto mr-auto">
-        <div class="card card-register bg-white text-dark shadow">
-            <h3 class="title mx-auto mb-0">Register</h3>
+    <div class="col-lg-6 ml-auto mr-auto">
+        <div class="card card-register bg-white text-dark shadow" style="max-width: 50rem;">
+            <h3 class="title mx-auto mb-0">Register a new account</h3>
             <div class="card-body">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <h4>Create a new account.</h4>
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-row form-group">
