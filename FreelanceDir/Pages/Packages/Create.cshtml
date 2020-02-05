@@ -1,0 +1,64 @@
+﻿@page
+@model FreelanceDir.Pages.Packages.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    var gigid = ViewData["GigId"];
+}
+
+<h3>@Model.Gig.Title - Create Package</h3>
+
+<hr />
+
+<form method="post">
+    <div class="jumbotron bg-light">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Package.GigId" value="@Model.Gig.Id" />
+        <div class="form-group">
+            <label asp-for="Package.Name" class="control-label"></label>
+            <input asp-for="Package.Name" class="form-control" />
+            <span asp-validation-for="Package.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Package.Details" class="control-label"></label>
+            <textarea asp-for="Package.Details" class="form-control"></textarea>
+            <span asp-validation-for="Package.Details" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Package.Price" class="control-label"></label>
+                    <input asp-for="Package.Price" class="form-control" />
+                    <span asp-validation-for="Package.Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Package.DeliveryDays" class="control-label"></label>
+                    <input asp-for="Package.DeliveryDays" class="form-control" />
+                    <span asp-validation-for="Package.DeliveryDays" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Package.Revisions" class="control-label"></label>
+                    <input asp-for="Package.Revisions" class="form-control" />
+                    <span asp-validation-for="Package.Revisions" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group text-center">
+        <a class="btn btn-default" asp-page="../Edit" asp-route-id="@Model.Gig.Id">Cancel</a>
+        <input type="submit" value="Create" class="btn btn-success" />
+    </div>
+</form>
+
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
