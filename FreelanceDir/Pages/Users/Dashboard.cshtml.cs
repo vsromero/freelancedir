@@ -23,7 +23,7 @@ namespace FreelanceDir.Pages.Users
         }
 
         public IList<Gig> Gigs { get;set; }
-        public IList<Order> LatestOrders { get; set; }
+        public IList<Order> LatestOrders { get; set; }        
         public IList<Message> LatestMessages { get; set; }
         public IList<Review> LatestReviews { get; set; }
 

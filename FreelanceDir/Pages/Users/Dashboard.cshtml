@@ -1,17 +1,22 @@
 ﻿@page
 @model FreelanceDir.Pages.Users.DashboardModel
 @inject IJsonHelper Json
+@inject UserManager<User> _userManager;
 
 @{
     ViewData["Title"] = "Index";
+    //Incoming orders
+    var incomingOrders = Model.LatestOrders.Where(o => o.SellerId == _userManager.GetUserId(User));
+    //Outgoing orders
+    var outgoingOrders = Model.LatestOrders.Where(o => o.BuyerId == _userManager.GetUserId(User));
     //Get month name
-    var monthLabels = Json.Serialize(Model.LatestOrders.Reverse().Select(o => o.DeliveredDate.ToString("MMM")).Distinct());
+    var monthLabels = Json.Serialize(incomingOrders.Reverse().Select(o => o.DeliveredDate.ToString("MMM")).Distinct());
     //Get the sum of order earnings by month
-    var monthEarnings = Json.Serialize(Model.LatestOrders.Reverse().ToLookup(o => o.DeliveredDate.Month, o => o.AmountPaidToSeller).Select(o => o.Sum()));
+    var monthEarnings = Json.Serialize(incomingOrders.Reverse().ToLookup(o => o.DeliveredDate.Month, o => o.AmountPaidToSeller).Select(o => o.Sum()));
     //Get gig names
     var gigLabels = Json.Serialize(Model.Gigs.OrderBy(g => g.Id).Select(g => g.Title));
     //Get the sum of order earnings by gig
-    var gigEarnings = Json.Serialize(Model.LatestOrders.OrderBy(o => o.GigId).ToLookup(o => o.GigId, o => o.AmountPaidToSeller).Select(o => o.Sum()));
+    var gigEarnings = Json.Serialize(incomingOrders.OrderBy(o => o.GigId).ToLookup(o => o.GigId, o => o.AmountPaidToSeller).Select(o => o.Sum()));
 }
 
 <div class="row">
@@ -23,11 +28,31 @@
 <div class="row">
     <div class="col">
         <div class="row">
-            <div class="col"><h6>Latest Orders</h6></div>
-            <div class="col"><a asp-page="/Orders/Index" class="font-weight-normal">See all</a></div>
-        </div>        
+            <div class="col"><h6>Latest Incoming Orders</h6></div>
+            <div class="col-auto"><a asp-page="/Orders/Index" class="font-weight-normal">See all</a></div>
+        </div>
         <div class="list-grup">
-            @foreach (var order in Model.LatestOrders.Take(5))
+            @if (incomingOrders.Count() == 0)
+            {
+                <h3>No orders yet!</h3>
+            }
+            @foreach (var order in incomingOrders.Take(5))
+            {
+                <a href="#" class="list-group-item list-group-item-action">@order.Gig.Title - @order.Buyer.UserName</a>
+            }
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+            <div class="col"><h6>Latest Outgoing Orders</h6></div>
+            <div class="col-auto"><a asp-page="/Orders/Index" class="font-weight-normal">See all</a></div>
+        </div>
+        <div class="list-grup">
+            @if (outgoingOrders.Count() == 0)
+            {
+                <h3>No orders yet!</h3>
+            }
+            @foreach (var order in Model.LatestOrders.Where(o => o.BuyerId == _userManager.GetUserId(User)).Take(5))
             {
                 <a href="#" class="list-group-item list-group-item-action">@order.Gig.Title - @order.Buyer.UserName</a>
             }
@@ -36,9 +61,13 @@
     <div class="col">
         <div class="row">
             <div class="col"><h6>Latest Messages</h6></div>
-            <div class="col"><a asp-page="/Messages/Index" class="font-weight-normal">See all</a></div>
+            <div class="col-auto"><a asp-page="/Messages/Index" class="font-weight-normal">See all</a></div>
         </div>
         <div class="list-grup">
+            @if (Model.LatestMessages.Count() == 0)
+            {
+                <h3>No orders yet!</h3>
+            }
             @foreach (var message in Model.LatestMessages.Take(5))
             {
                 var subtext = @message.MessageText.Substring(0, message.MessageText.Length >= 10 ? 10 : message.MessageText.Length);
@@ -109,7 +138,7 @@
 <script>
     var mLabels = @Html.Raw(monthLabels);
     var mEarnings = @Html.Raw(monthEarnings);
-
+    console.log(mEarnings.length == 0 ? 1 : 2);
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
