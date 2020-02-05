@@ -31,43 +31,33 @@
 </section>
 
 <hr />
-<section id="recent">
-    <h3 class="title">Recently Viewed</h3>
-    
-    <div class="card mb-3" style="max-width: 400px;">
-        <div class="row no-gutters">
-            <div class="col-md-4">
-                <img src="..." class="card-img" alt="IMG">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <p class="card-text">@s.Substring(0, 50) . . .</p>
-                    <p class="card-text pb-0"><small class="text-muted">Starting at $50</small></p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-            </div>
-        </div>
+<section id="recen">
+    <h3 class="title">Recently Added</h3>
+    <div class="d-flex flex-row" style="overflow: scroll">
+        @foreach (var item in Model.Popular.OrderByDescending(g => g.CreatedDate).Take(10))
+        {
+            await Html.RenderPartialAsync("_GigCardPartial", item);
+            <div class="pr-3"></div>
+        }
     </div>
-
 </section>
 
 <hr />
 <section id="popular">
     <h3 class="title">Popular</h3>
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row" style="overflow: scroll">
         @foreach (var item in Model.Popular.Take(10))
         {           
             await Html.RenderPartialAsync("_GigCardPartial", item);
             <div class="pr-3"></div>
         }
-    </div>
-    
+    </div>    
 </section>
 
 <hr />
 <section id="Suggested">
     <h3 class="title">Suggested</h3>
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row" style="overflow: scroll">
         @foreach (var item in Model.Popular.OrderByDescending(g => g.PositivePercentage).Take(10))
         {
             await Html.RenderPartialAsync("_GigCardPartial", item);

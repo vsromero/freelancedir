@@ -4,36 +4,18 @@
 
 }
 
-<div class="card mb-3" style="max-width: 400px;">
-    <div class="row no-gutters">
-        <div class="col-md-4">
-            <img src="..." class="card-img" alt="IMG">
-        </div>
-        <div class="col-md-8">
-            <div class="card-body">
-                <p class="card-text">
-                    <a asp-page="/Gigs/Details" asp-route-id="@Model.Id">
-                        @if (Model.Title.Length > 50)
-                        {
-                            @Model.Title.Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Model.Title
-                        }
-                    </a>
-                </p>
-                <div class="row">
-                    <div class="col">
-                        <p class="card-text pb-0">
-                            <a asp-page="/Users/Profile" asp-route-username="@Model.User.UserName"><small class="text-muted">@Model.User.UserName</small></a>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-muted">From $@Model.StartingPrice</small>
-                        </p>
-                    </div>
-                </div>                
-            </div>
-        </div>
+<div class="card col-auto" style="width: 18rem;">
+    <img src="~/images/@Model.ImageName" class="card-img-top" alt="..." style="height: 170px">
+    <div class="card-body">
+        <h6 class="card-title">
+            <a asp-page="/Gigs/Details" asp-route-id="@Model.Id" class="font-weight-normal">@Model.Title</a>
+        </h6>
+        <p class="card-text pb-0">
+            <a asp-page="/Users/Profile" asp-route-username="@Model.User.UserName"><small class="text-muted">@Model.User.UserName</small></a>
+        </p>
+        <p class="card-text pb-0 d-flex justify-content-between">
+            <small class="text-muted">From $@Model.StartingPrice</small>
+        </p>
+        <a asp-page="/Gigs/Details" asp-route-id="@Model.Id" class="btn btn-info">Learn More</a>
     </div>
 </div>

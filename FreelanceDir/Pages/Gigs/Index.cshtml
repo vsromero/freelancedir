@@ -31,7 +31,7 @@
 <div class="row row-no-gutters">
     @foreach (var gig in Model.Gigs)
     {
-        <div class="col-5 offset-1">
+        <div class="col-md-4">
             @await Html.PartialAsync("_GigCardPartial", gig)
         </div>
     }

@@ -35,6 +35,8 @@ namespace FreelanceDir.Models
 
         public ICollection<Review> Reviews { get; set; }
 
+        public string ImageName { get; set; }
+
         [NotMapped]
         public decimal PositivePercentage {
             get

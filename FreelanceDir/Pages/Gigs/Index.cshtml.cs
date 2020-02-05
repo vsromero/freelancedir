@@ -32,56 +32,64 @@ namespace FreelanceDir.Pages.Gigs
 
         public async Task OnGetAsync()
         {
+            /* Convert to list in order to use starting price and positive reviews unmapped properties */
             var gigs = _context.Gigs
                 .Include(g => g.User)
                 .Include(g => g.Category)
                 .Include(g => g.Packages)
                 .Where(g => g.Active)
-                .Select(g => g);
+                .AsNoTracking()
+                .ToList(); 
 
             if (!string.IsNullOrEmpty(SearchString))
             {
-                gigs = gigs.Where(g => g.Title.Contains(SearchString) || g.Description.Contains(SearchString));
+                gigs = gigs.Where(g => g.Title.Contains(SearchString) || g.Description.Contains(SearchString)).ToList();
             }
             if (CategoryId.HasValue)
             {
-                gigs = gigs.Where(g => g.CategoryId == CategoryId || g.Category.ParentId == CategoryId);
+                gigs = gigs.Where(g => g.CategoryId == CategoryId || g.Category.ParentId == CategoryId).ToList();
             }
             if (Descending == true)
             {
-                gigs = gigs.OrderByDescending(g => g.Id);
+                gigs = gigs.OrderByDescending(g => g.Id).ToList();
             }
             if (SortBy.HasValue)
             {
-                System.Linq.Expressions.Expression<Func<Gig, object>> key;
+                Comparison<Gig> comp;
                 switch (SortBy)
                 {
                     case SortEnum.Price:
-                        key = g => g.StartingPrice;
+                        comp = (x, y) => x.StartingPrice.CompareTo(y.StartingPrice);
                         break;
                     case SortEnum.Date:
-                        key = g => g.CreatedDate;
+                        comp = (x, y) => x.CreatedDate.CompareTo(y.CreatedDate);
                         break;
                     case SortEnum.Rating:
-                        key = g => g.PositivePercentage;
+                        comp = (x, y) => x.PositivePercentage.CompareTo(y.PositivePercentage);
                         break;
                     case SortEnum.Views:
-                        key = g => g.TotalViewsCount;
+                        comp = (x, y) => x.TotalViewsCount.CompareTo(y.TotalViewsCount);
                         break;
                     case SortEnum.Delivered:
-                        key = g => g.JobsCompleted;
+                        comp = (x, y) => x.JobsCompleted.CompareTo(y.JobsCompleted);
                         break;
                     default:
-                        key = g => g.JobsCompleted;
+                        comp = (x, y) => x.JobsCompleted.CompareTo(y.JobsCompleted);
                         break;
                 }
-                gigs = Descending == true ? gigs.OrderByDescending(key) : gigs.OrderBy(key);                
+
+                gigs.Sort(comp);
+                if (Descending == true)
+                {
+                    gigs.Reverse();
+                }
             }
 
             Categories = await _context.Categories
                 .Include(c => c.Children)
+                .AsNoTracking()
                 .ToListAsync();
-            Gigs = await gigs.ToListAsync();
+            Gigs = gigs;
         }
     }
 

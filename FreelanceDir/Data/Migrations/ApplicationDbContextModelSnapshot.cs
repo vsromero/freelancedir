@@ -57,6 +57,8 @@ namespace FreelanceDir.Data.Migrations
 
                     b.Property<int?>("GigListId");
 
+                    b.Property<string>("ImageName");
+
                     b.Property<int>("JobsCompleted");
 
                     b.Property<DateTime>("LastModifiedDate");
